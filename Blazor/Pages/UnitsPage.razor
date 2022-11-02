@@ -1,0 +1,11 @@
+﻿@page "/unitslist"
+@using Blazor.Data
+@inject UnitService unitservice
+
+@{
+    if(unitservice.getUnits().Count == 0)
+    {
+        unitservice.setUnits();
+    }
+}
+<UnitsList units = "unitservice.getUnits()"></UnitsList>
