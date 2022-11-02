@@ -3,10 +3,28 @@
 <PageTitle>ImageShow</PageTitle>
 
 @using Blazor.Data
-@inject WeatherForecastService ForecastService
 
 <h1>ImageShow</h1>
 
+@if (imageSource is not null)
+{
+    <p>
+        <img src="@imageSource" />
+    </p>
+}
+
+@foreach (var imageId in Enumerable.Range(1, 3))
+{
+    <button @onclick="() => ShowImage(imageId)">
+        Image @imageId
+    </button>
+}
+
 @code {
-    
+    private string? imageSource;
+
+    private void ShowImage(int id)
+    {
+        imageSource = $"images/image{id}.jpg";
+    }
 }

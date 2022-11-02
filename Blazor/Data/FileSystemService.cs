@@ -11,7 +11,7 @@ namespace Blazor.Data
             var database = client.GetDatabase("Images");
             var gridFS = new GridFSBucket(database);
 
-            using (FileStream fs = new FileStream("C://Users/vnsxd/Desktop/art.jpg", FileMode.Open))
+            using (FileStream fs = new FileStream("C://Users/vnsxd/Desktop/image3.jpg", FileMode.Open))
             {
                 gridFS.UploadFromStream("Img.jpg", fs);
             }
