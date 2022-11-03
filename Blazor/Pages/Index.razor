@@ -1,9 +1,54 @@
 ﻿@page "/"
+@using Blazor.Data
+@using MongoDB.Driver
+@using MongoDB.Driver.GridFS
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<InputFile OnChange="FileData" multiple></InputFile>
 
-Welcome to your new app.
+<table class="table">
+    <thead>
+        <tr>
+            <th>Имя файла</th>
+            <th>Тип файла</th>
+        </tr>
+    </thead>
+        <tbody>
+            @foreach (var item in _loadedFiles)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.GetType</td>
+                    <td><button @onclick="()=>Reomove(item)">Удалить</button></td>
+                    <td><button @onclick="()=>DataAdd(item)">Добавить в базу</button></td>
+                </tr>
+            }
+        </tbody>
+</table>
+@code{
+    string name { get; set; }
+    [Inject] FileSystemService service { get; set; }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    private List<IBrowserFile> _loadedFiles = new();
+
+    async Task FileData(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            _loadedFiles.Add(file);
+        }
+    }
+
+    public void Reomove(IBrowserFile file)
+    {
+        _loadedFiles.Remove(file);
+    }
+
+    public void DataAdd(IBrowserFile file)
+    {
+        service.UploadImageToDb(file);
+
+        _loadedFiles.Remove(file); 
+    }
+}

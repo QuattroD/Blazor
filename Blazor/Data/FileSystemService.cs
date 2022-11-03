@@ -1,20 +1,19 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
+using System.IO;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Blazor.Data
 {
     public class FileSystemService
     {
-        public void UploadImageToDb()
+        public void UploadImageToDb(IBrowserFile file)
         {
             var client = new MongoClient("mongodb://localhost");
-            var database = client.GetDatabase("Images");
+            var database = client.GetDatabase("File");
             var gridFS = new GridFSBucket(database);
-
-            using (FileStream fs = new FileStream("C://Users/vnsxd/Desktop/image3.jpg", FileMode.Open))
-            {
-                gridFS.UploadFromStream("Img.jpg", fs);
-            }
+            Stream stream = file.OpenReadStream();
+            gridFS.UploadFromStream(file.Name, stream);
         }
 
         public void DownloadToLocal()
@@ -24,7 +23,7 @@ namespace Blazor.Data
             var gridFS = new GridFSBucket(database);
             using (FileStream fs = new FileStream($"{Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/Images/")}DeserializedImage.jpg", FileMode.CreateNew))
             {
-                gridFS.DownloadToStreamByName("Img.jpg", fs);
+               gridFS.DownloadToStreamByName("Img.jpg", fs);
             }
         }
     }
