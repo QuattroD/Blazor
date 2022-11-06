@@ -1,19 +1,20 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 
 namespace Blazor.Data
 {
     public class FileSystemService
     {
-        public void UploadImageToDb()
+        public void UploadImageToDb(IBrowserFile files, string path)
         {
             var client = new MongoClient("mongodb://localhost");
-            var database = client.GetDatabase("Images");
+            var database = client.GetDatabase("Files");
             var gridFS = new GridFSBucket(database);
 
-            using (FileStream fs = new FileStream("C://Users/vnsxd/Desktop/image3.jpg", FileMode.Open))
+            using (FileStream fs = new FileStream(path, FileMode.Open))
             {
-                gridFS.UploadFromStream("Img.jpg", fs);
+                gridFS.UploadFromStream(files.Name, fs);
             }
         }
 

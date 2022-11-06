@@ -1,0 +1,50 @@
+﻿@page "/files"
+@using System
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Logging
+@inject IWebHostEnvironment Environment
+<PageTitle>Files</PageTitle>
+
+@using Blazor.Data
+@inject FileSystemService fss
+
+<h1>Files</h1>
+<InputFile OnChange="selectfiles" multiple/>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in loadedFiles)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.ContentType</td>
+                    <td>@item.Size</td>
+                <td><button class="btn btn-warning" @onclick="() => fss.UploadImageToDb(item, path)">Upload to DB</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+@code {
+    private List<IBrowserFile> loadedFiles = new List<IBrowserFile>();
+    private string path = string.Empty;
+
+    private async Task selectfiles(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            loadedFiles.Add(file);
+            path = Path.Combine(Environment.ContentRootPath,"wwwroot", "files", file.Name);
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream(1000000000).CopyToAsync(fs);
+        }
+    }
+}
