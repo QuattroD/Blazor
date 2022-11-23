@@ -1,0 +1,32 @@
+﻿@page "/autorization"
+
+@inject Blazor.Data.UserService db
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1>Enter zone</h1>
+            <label for="name">Name</label>
+            <input @bind="user.Name" class="form-control"/>
+
+            <label for="username">UserName</label>
+            <input @bind="user.UserName" class="form-control"/>
+
+            <label for="password">Password</label>
+            <input @bind="user.Password" class="form-control"/>
+
+            <label for="email">Email</label>
+            <input @bind="user.Email" class="form-control"/>
+
+            <p class="my-4">
+                <button @onclick="(x => UsersAdd())" class="btn-primary">Sign up</button>               
+            </p>
+    </div>
+</div>
+
+@code {
+    AutorizationModel user = new AutorizationModel();
+    private void UsersAdd()
+    {
+        db.SignUp(user);
+    }
+}
